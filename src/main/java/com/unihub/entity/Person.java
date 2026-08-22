@@ -32,7 +32,7 @@ public class Person {
     @Id
     @EqualsAndHashCode.Include
     @Column(name="id", nullable = false,updatable = false)
-    private Integer id;
+    private String id;
 
     @Column(name="email",nullable = false,updatable = false,unique = true)
     private String email;

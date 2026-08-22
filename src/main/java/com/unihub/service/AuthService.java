@@ -104,4 +104,124 @@ public class AuthService {
         return new MessageResponse("OTP sent to your email.");
     }
 
+    @Transactional
+    public AuthResponse verifyOtp(OtpVerifyRequest request) {
+        Person person=personRepository.findByEmail(request.getEmail())
+                .orElseThrow(()->new ResourceNotFoundException("Person Not found."));
+
+        Otp otp=otpRepository.findByPersonAndOtpCode(person, request.getOtp())
+                .orElseThrow(()->new UnauthorizedException("Invalid OTP"));
+
+        // check expiry
+        if (otp.getOtpExpiry().isBefore(LocalDateTime.now())) {
+            otpRepository.deleteByPerson(person);
+            throw new UnauthorizedException("OTP has expired, please request for a new one.");
+        }
+        otpRepository.deleteByPerson(person);
+
+
+        // generate tokens
+        String Token=jwtUtil.generateToken(person.getEmail());
+        String refreshToken=jwtUtil.generateRefreshToken(person.getEmail());
+
+        return AuthResponse.builder()
+                .Token(Token)
+                .refreshToken(refreshToken)
+                .id(person.getId())
+                .email(person.getEmail())
+                .role(person.getRole())
+                .firstName(person.getFirstName())
+                .lastName(person.getLastName())
+                .build();
+    }
+
+    // ── 4. Forgot password ────────────────────────────────
+    @Transactional
+    public MessageResponse forgotPassword(ForgotPasswordRequest request) {
+        Person person = personRepository.findByEmail(request.getEmail())
+                .orElseThrow(()->new ResourceNotFoundException(
+                        "No account found with this email : "+request.getEmail()));
+        passwordResetRepository.deleteByPerson(person);
+
+        String token=UUID.randomUUID().toString();
+
+        PasswordReset passwordReset=PasswordReset.builder()
+                .person(person)
+                .token(token)
+                .expiry(LocalDateTime.now(ZoneOffset.UTC).plusMinutes(5))
+                .build();
+
+        passwordResetRepository.save(passwordReset);
+        sendResetEmail(person.getEmail(),token);
+
+        return new MessageResponse("Password reset link sent to your email.");
+    }
+    // ── 5. Change password (logged user) ───────────────
+    @Transactional
+    public MessageResponse changePassword(String email,
+                                         String currentPassword,
+                                          String newPassword,
+                                          String confirmPassword){
+
+        Person person=personRepository.findByEmail(email)
+                .orElseThrow(()->new ResourceNotFoundException("Person Not Found with this email : "+email));
+
+        // verify current password
+        if (!passwordEncoder.matches(currentPassword,person.getPassword())) {
+            throw new UnauthorizedException("Current Passwords is Incorrect."+
+                    "If you forgot your password use forgot password.");
+        }
+
+        // check new passwords match
+        if(!newPassword.equals(confirmPassword)){
+            throw new BusinessRuleException("Passwords do not match.");
+        }
+
+        // check new password is not same as current
+        if (passwordEncoder.matches(newPassword,person.getPassword())) {
+            throw  new BusinessRuleException("new password is equal with the current password.");
+        }
+
+        person.setPassword(passwordEncoder.encode(newPassword));
+        person.setUpdatedBy(person.getEmail());
+        personRepository.save(person);
+
+        return new MessageResponse("Password changed successfully.");
+
+
+    }
+
+    // ── Helper — send OTP email ───────────────────────────
+    private void sendOtp(Person person){
+        otpRepository.deleteByPerson(person);
+        String otpCode=String.format("%06d",new Random().nextInt(999999));
+
+        Otp otp=Otp.builder()
+                .person(person)
+                .otpCode(otpCode)
+                .otpExpiry(LocalDateTime.now(ZoneOffset.UTC).plusMinutes(otpExpiryMinutes))
+                .build();
+        otpRepository.save(otp);
+
+        SimpleMailMessage message=new SimpleMailMessage();
+        message.setTo(person.getEmail());
+        message.setSubject("UniHub — Your OTP Code");
+        message.setText("Your OTP code is: " + otpCode +
+                "\n\nThis code expires in " + otpExpiryMinutes + " minutes." +
+                "\n\nIf you did not request this, please ignore this email.");
+
+        mailSender.send(message);
+    }
+
+    // ── Helper — send reset email ─────────────────────────
+    private  void sendResetEmail(String email, String token){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("UniHub - Password Reset");
+        message.setText("Click the link below to reset your password: "+
+                "\n\nhttps://unihub.com/reset-password?token="+token+
+                "\n\nThis link expires in 5 minutes."+
+                "\n\nIf you did not request this, please ignore this email.");
+        mailSender.send(message);
+    }
 }

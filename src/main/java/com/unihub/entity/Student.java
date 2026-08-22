@@ -1,7 +1,6 @@
 package com.unihub.entity;
 
-import com.unihub.entity.enums.Cycle;
-import com.unihub.entity.enums.Student_Type;
+import com.unihub.entity.enums.Degree;
 import com.unihub.entity.enums.Tuition_Status;
 import com.unihub.entity.enums.User_Status;
 import jakarta.persistence.*;
@@ -19,9 +18,6 @@ import lombok.experimental.SuperBuilder;
 @PrimaryKeyJoinColumn(name = "person_id")
 public class Student extends Person{
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "student_type",nullable = false)
-    private Student_Type studentType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tuition_status", nullable = false)
@@ -31,8 +27,8 @@ public class Student extends Person{
     private Integer enrollmentYear;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "cycle", nullable = false)
-    private Cycle cycle;
+    @Column(name = "degree", nullable = false)
+    private Degree degree;
 
     @Column(name = "current_year" , nullable = false)
     private Integer currentYear;
