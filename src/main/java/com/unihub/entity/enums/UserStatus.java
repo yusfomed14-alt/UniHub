@@ -1,6 +1,6 @@
 package com.unihub.entity.enums;
 
-public enum User_Status {
+public enum UserStatus {
     ACTIVE,
     SUSPENDED,
     EXPELLED,

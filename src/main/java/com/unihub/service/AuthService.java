@@ -1,8 +1,12 @@
 package com.unihub.service;
 
-import com.unihub.dto.*;
+import com.unihub.dto.request.ForgotPasswordRequest;
+import com.unihub.dto.request.LoginRequest;
+import com.unihub.dto.request.OtpVerifyRequest;
+import com.unihub.dto.request.RegisterRequest;
+import com.unihub.dto.response.AuthResponse;
+import com.unihub.dto.response.MessageResponse;
 import com.unihub.entity.*;
-import com.unihub.entity.enums.Role;
 import com.unihub.exception.BusinessRuleException;
 import com.unihub.exception.UnauthorizedException;
 import com.unihub.exception.ResourceNotFoundException;

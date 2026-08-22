@@ -1,7 +1,6 @@
 package com.unihub.entity.enums;
 
-public enum Degree {
-    GRADE_TWELVE_DEGREE,
+public enum Cycle {
     BACHELOR,
     MASTER,
     PHD

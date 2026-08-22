@@ -1,4 +1,4 @@
-package com.unihub.dto;
+package com.unihub.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

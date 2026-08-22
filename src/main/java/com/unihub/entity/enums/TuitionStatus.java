@@ -1,6 +1,6 @@
 package com.unihub.entity.enums;
 
-public enum Tuition_Status {
+public enum TuitionStatus {
     PARALEL,
     ZANKOLYN
 }

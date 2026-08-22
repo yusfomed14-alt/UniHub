@@ -1,4 +1,4 @@
-package com.unihub.exception;
+package com.unihub.dto.response;
 
 import lombok.*;
 

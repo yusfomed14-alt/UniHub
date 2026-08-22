@@ -1,4 +1,4 @@
-package com.unihub.dto;
+package com.unihub.dto.response;
 import com.unihub.entity.enums.Role;
 import lombok.*;
 

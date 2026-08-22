@@ -1,6 +1,6 @@
 package com.unihub.entity.enums;
 
-public enum Teacher_Type {
+public enum TeacherType {
     PROFESSOR,
     TEACHER_ASSISTANT
 }

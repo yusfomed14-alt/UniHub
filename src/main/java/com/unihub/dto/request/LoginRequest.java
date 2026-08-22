@@ -1,4 +1,4 @@
-package com.unihub.dto;
+package com.unihub.dto.request;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;

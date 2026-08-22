@@ -5,7 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-import com.unihub.entity.enums.Teacher_Type;
+import com.unihub.entity.enums.TeacherType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,7 +33,7 @@ public class Teacher extends Person{
 
     @Enumerated(EnumType.STRING)
     @Column(name = "teacher_type", nullable = false)
-    private Teacher_Type teacherType;
+    private TeacherType teacherType;
 
     @Column(name="office_room")
     private String office_room;

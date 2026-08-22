@@ -1,4 +1,4 @@
-package com.unihub.dto;
+package com.unihub.dto.request;
 
 import com.unihub.entity.enums.Role;
 import jakarta.validation.constraints.*;

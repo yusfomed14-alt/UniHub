@@ -1,8 +1,8 @@
 package com.unihub.entity;
 
-import com.unihub.entity.enums.Degree;
-import com.unihub.entity.enums.Tuition_Status;
-import com.unihub.entity.enums.User_Status;
+import com.unihub.entity.enums.Cycle;
+import com.unihub.entity.enums.TuitionStatus;
+import com.unihub.entity.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -21,14 +21,14 @@ public class Student extends Person{
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tuition_status", nullable = false)
-    private Tuition_Status tuitionStatus;
+    private TuitionStatus tuitionStatus;
 
     @Column(name = "enrollment_year" , nullable = false)
     private Integer enrollmentYear;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "degree", nullable = false)
-    private Degree degree;
+    @Column(name = "Cycle", nullable = false)
+    private Cycle Cycle;
 
     @Column(name = "current_year" , nullable = false)
     private Integer currentYear;
@@ -38,6 +38,6 @@ public class Student extends Person{
 
     @Enumerated(EnumType.STRING)
     @Column(name = "student_status",nullable = false)
-    private User_Status userStatus;
+    private UserStatus userStatus;
 
 }
