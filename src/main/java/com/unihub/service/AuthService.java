@@ -1,9 +1,6 @@
 package com.unihub.service;
 
-import com.unihub.dto.request.ForgotPasswordRequest;
-import com.unihub.dto.request.LoginRequest;
-import com.unihub.dto.request.OtpVerifyRequest;
-import com.unihub.dto.request.RegisterRequest;
+import com.unihub.dto.request.*;
 import com.unihub.dto.response.AuthResponse;
 import com.unihub.dto.response.MessageResponse;
 import com.unihub.entity.*;
@@ -61,6 +58,7 @@ public class AuthService {
         }
 
         // check not already activated
+        //add stuts for checking
         if (person.getPassword()!=null){
             throw new BusinessRuleException("Account is already activated please Login.");
         }
@@ -131,6 +129,32 @@ public class AuthService {
         return AuthResponse.builder()
                 .Token(Token)
                 .refreshToken(refreshToken)
+                .id(person.getId())
+                .email(person.getEmail())
+                .role(person.getRole())
+                .firstName(person.getFirstName())
+                .lastName(person.getLastName())
+                .build();
+    }
+
+    // Refresh token ──────────────────────────────────
+    public AuthResponse refreshToken(RefreshTokenRequest request) {
+        String refreshToken=request.getRefreshToken();
+
+        if(!jwtUtil.isTokenValid(refreshToken)){
+            throw new UnauthorizedException("Invalid or expired refresh token.");
+        }
+
+        String email=jwtUtil.extractEmail(refreshToken);
+        Person person=personRepository.findByEmail(email)
+                .orElseThrow(()->new ResourceNotFoundException("Person not found with email : "+email));
+
+        String newtoken=jwtUtil.generateToken(person.getEmail());
+        String newrefreshTokwn=jwtUtil.generateRefreshToken(person.getEmail());
+
+        return AuthResponse.builder()
+                .Token(newtoken)
+                .refreshToken(newrefreshTokwn)
                 .id(person.getId())
                 .email(person.getEmail())
                 .role(person.getRole())
