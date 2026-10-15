@@ -150,11 +150,11 @@ public class AuthService {
                 .orElseThrow(()->new ResourceNotFoundException("Person not found with email : "+email));
 
         String newtoken=jwtUtil.generateToken(person.getEmail());
-        String newrefreshTokwn=jwtUtil.generateRefreshToken(person.getEmail());
+        String newrefreshToken=jwtUtil.generateRefreshToken(person.getEmail());
 
         return AuthResponse.builder()
                 .Token(newtoken)
-                .refreshToken(newrefreshTokwn)
+                .refreshToken(newrefreshToken)
                 .id(person.getId())
                 .email(person.getEmail())
                 .role(person.getRole())
